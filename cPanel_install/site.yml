@@ -10,7 +10,7 @@
       enabled: false
       state: stopped
     when: ansible_facts['os_family'] == "RedHat"
-    #no sense in running this on ubuntu after all
+    #no sense in running this on debian after all
 
   - name: install perl
     ansible.builtin.package:
@@ -18,18 +18,21 @@
         - perl
         - curl
       state: present
+    #generic package module so this can be run on more than just rhel-based servers
     
   - name: disable SELinux
     ansible.builtin.lineinfile:
       path: /etc/selinux/config
       regex: '^SELINUX='
       line: SELINUX=disabled
+    ignore_errors: true
+    #if the server doesn't have SELinuix installed, I dont want the script to straight up not work
 
   - name: go home
     ansible.builtin.shell: cd /home
 
   - name: install cPanel
-    ansible.builtin.shell: curl -o latest -L https://securedownloads.cpanel.net/latest
+    ansible.builtin.shell: curl -o latest -L https://securedownloads.cpanel.net/latest && sh latest
 
 
 
