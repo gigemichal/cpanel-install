@@ -1,0 +1,35 @@
+---
+- name: Install cPanel on a linux server
+  hosts: localhost
+  become: yes
+  tasks: 
+
+  - name: disable firewalld
+    ansible.builtin.systemd_service:
+      name: firewalld
+      enabled: false
+      state: stopped
+    when: ansible_facts['os_family'] == ""RedHat"
+    #no sense in running this on ubuntu after all
+
+  - name: install perl
+    ansible.builtin.package:
+      name: 
+        - perl
+        - curl
+      state: present
+    
+  - name: disable SELinux
+    ansible.builtin.lineinfile:
+      path: /etc/selinux/config
+      regex: '^SELINUX='
+      line: SELINUX=disabled
+
+  - name: go home
+    ansible.builtin.shell: cd /home
+
+  - name: install cPanel
+    ansible.builtin.shell: curl -o latest -L https://securedownloads.cpanel.net/latest
+
+
+
