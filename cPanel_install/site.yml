@@ -30,9 +30,8 @@
 
   - name: go home
     ansible.builtin.shell: cd /home
+    #cPanel recommends the installation be in /home
 
   - name: install cPanel
     ansible.builtin.shell: curl -o latest -L https://securedownloads.cpanel.net/latest && sh latest
-
-
-
+    #installation script taken from cPanel's documentation
